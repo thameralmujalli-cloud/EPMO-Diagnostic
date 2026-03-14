@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMO vs EPMO Diagnostic — Is Your Organization Ready for an EPMO?</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #EFF2F7;
+  --bg-warm: #ECE7E1;
+  --teal: #0D8A8C;
+  --teal-dark: #0B6D6E;
+  --teal-text: #429090;
+  --navy: #2C3F67;
+  --title-dark: #1A2338;
+  --red: #C84042;
+  --orange: #E19041;
+  --purple: #7B4B94;
+  --body: #3C4555;
+  --card: #FFFFFF;
+  --card-hover: #F8FAFB;
+  --border: #E2E8F0;
+  --circle-beige: #E2D9D0;
+  --circle-mint: #D5DED9;
+  --font-display: 'Fraunces', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--body);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  height: 5px;
+  background: var(--teal);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+  position: fixed;
+  top: 5px;
+  left: 0;
+  height: 3px;
+  background: var(--orange);
+  transition: width 0.4s ease;
+  z-index: 99;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 60px 24px 40px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: var(--bg-warm);
+  border-radius: 16px;
+  padding: 48px 40px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: var(--circle-beige);
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  bottom: -80px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: var(--circle-mint);
+}
+.hero-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--title-dark);
+  line-height: 1.2;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+.hero-underline {
+  width: 60px;
+  height: 4px;
+  background: var(--orange);
+  border-radius: 2px;
+  margin: 16px 0;
+  position: relative;
+  z-index: 1;
+}
+.hero p {
+  font-size: 14px;
+  color: var(--body);
+  max-width: 420px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== QUESTION CARD ===== */
+.question-section { display: none; }
+.question-section.active { display: block; animation: fadeIn 0.35s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.q-counter {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--teal-text);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.q-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+}
+
+.q-card h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--title-dark);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.q-dimension {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+.q-dimension.scope { background: #FDE8E8; color: var(--red); }
+.q-dimension.authority { background: #FDF0E0; color: var(--orange); }
+.q-dimension.strategy { background: #E0F5F5; color: var(--teal); }
+.q-dimension.governance { background: #E8EBF4; color: var(--navy); }
+.q-dimension.value { background: #F0E8F5; color: var(--purple); }
+
+.options { display: flex; flex-direction: column; gap: 10px; }
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--card);
+}
+.option:hover { border-color: var(--teal); background: #F0FAFA; }
+.option.selected { border-color: var(--teal); background: #E6F5F5; }
+
+.option-marker {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--body);
+  transition: all 0.2s ease;
+  margin-top: 1px;
+}
+.option.selected .option-marker {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+
+.option-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--title-dark);
+  line-height: 1.45;
+}
+.option-label small {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--body);
+  margin-top: 2px;
+}
+
+/* ===== NAVIGATION ===== */
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-back {
+  background: transparent;
+  color: var(--body);
+  border: 1px solid var(--border);
+}
+.btn-back:hover { border-color: var(--body); }
+.btn-next {
+  background: var(--teal);
+  color: white;
+}
+.btn-next:hover { background: var(--teal-dark); }
+.btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ===== RESULTS ===== */
+.results-section { display: none; }
+.results-section.active { display: block; animation: fadeIn 0.5s ease; }
+
+.result-hero {
+  background: var(--bg-warm);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.result-hero::before {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: var(--circle-beige);
+}
+.result-hero::after {
+  content: '';
+  position: absolute;
+  left: -40px;
+  bottom: -40px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: var(--circle-mint);
+}
+
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+.result-badge.pmo { background: #FDE8E8; color: var(--red); }
+.result-badge.transition { background: #FDF0E0; color: var(--orange); }
+.result-badge.epmo { background: #E0F5F5; color: var(--teal-dark); }
+
+.result-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--title-dark);
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+.result-subtitle {
+  font-size: 15px;
+  color: var(--body);
+  position: relative;
+  z-index: 1;
+}
+
+/* Score gauge */
+.gauge-container {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 8px;
+  position: relative;
+  z-index: 1;
+}
+.gauge {
+  width: 180px;
+  height: 90px;
+  position: relative;
+  overflow: hidden;
+}
+.gauge-bg {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 14px solid var(--border);
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  transform: rotate(-225deg);
+  position: absolute;
+  top: 0;
+  clip-path: inset(0 0 50% 0);
+}
+.gauge-fill {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 14px solid var(--teal);
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  transform: rotate(-225deg);
+  position: absolute;
+  top: 0;
+  clip-path: inset(0 0 50% 0);
+  transition: transform 1s ease;
+}
+.gauge-score {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--title-dark);
+}
+.gauge-label {
+  text-align: center;
+  font-size: 12px;
+  color: var(--body);
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Dimension breakdown */
+.dimension-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+.dim-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.dim-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--title-dark);
+}
+.dim-score-label {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 10px;
+}
+.dim-score-label.pmo { background: #FDE8E8; color: var(--red); }
+.dim-score-label.transition { background: #FDF0E0; color: #B37520; }
+.dim-score-label.epmo { background: #E0F5F5; color: var(--teal-dark); }
+
+.dim-bar-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.dim-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+.dim-bar-fill.scope { background: var(--red); }
+.dim-bar-fill.authority { background: var(--orange); }
+.dim-bar-fill.strategy { background: var(--teal); }
+.dim-bar-fill.governance { background: var(--navy); }
+.dim-bar-fill.value { background: var(--purple); }
+
+.dim-insight {
+  font-size: 12.5px;
+  color: var(--body);
+  margin-top: 10px;
+  padding-left: 12px;
+  border-left: 3px solid var(--border);
+  line-height: 1.5;
+}
+
+/* Recommendations */
+.recs-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 28px;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+}
+.recs-card h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--title-dark);
+  margin-bottom: 16px;
+}
+.rec-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.rec-arrow {
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 16px;
+  margin-top: 1px;
+}
+.rec-text {
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.rec-text strong { color: var(--title-dark); }
+
+/* CTA */
+.cta-block {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  border-radius: 12px;
+  padding: 28px;
+  margin-top: 24px;
+  color: white;
+  text-align: center;
+}
+.cta-block h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.cta-block p { font-size: 13px; opacity: 0.85; }
+
+.btn-restart {
+  background: white;
+  color: var(--teal-dark);
+  margin-top: 16px;
+  font-weight: 700;
+}
+.btn-restart:hover { background: #F0F0F0; }
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 32px 0;
+  font-size: 12px;
+  color: var(--teal-text);
+}
+.footer a { color: var(--teal); text-decoration: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 50px 16px 32px; }
+  .hero, .result-hero { padding: 32px 24px; }
+  .hero h1 { font-size: 26px; }
+  .q-card { padding: 24px; }
+  .result-title { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"></div>
+<div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero" id="heroSection">
+    <div class="hero-label">EPMO Series · Part 1 · Diagnostic</div>
+    <h1>PMO vs. EPMO<br>Diagnostic Quiz</h1>
+    <div class="hero-underline"></div>
+    <p>10 questions across 5 dimensions. Find out whether your organization is operating as a departmental PMO, in transition, or ready for an Enterprise PMO.</p>
+    <div style="margin-top: 24px;">
+      <button class="btn btn-next" onclick="startQuiz()">Start the Diagnostic →</button>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div id="quizContainer"></div>
+
+  <!-- RESULTS -->
+  <div class="results-section" id="resultsSection"></div>
+
+  <div class="footer">
+    Thamer AlMujalli · PMO-CP · PMI-CP · PMP · P6<br>
+    Based on <a href="#">PMI PMO Practice Guide (2025)</a> & <a href="#">PMI OPM Standard</a>
+  </div>
+</div>
+
+<script>
+const questions = [
+  // SCOPE (2 questions)
+  {
+    dimension: "Scope",
+    dimClass: "scope",
+    question: "How many business units does your PMO currently serve?",
+    options: [
+      { text: "One department or function", detail: "e.g., IT PMO, Engineering PMO", score: 1 },
+      { text: "2–3 departments with some cross-functional reach", detail: "Expanding but still siloed", score: 2 },
+      { text: "Most or all business units across the organization", detail: "Enterprise-wide coverage", score: 3 },
+    ]
+  },
+  {
+    dimension: "Scope",
+    dimClass: "scope",
+    question: "When a new strategic initiative launches, who decides the PM approach and standards?",
+    options: [
+      { text: "Each department chooses its own approach", detail: "No enterprise standard", score: 1 },
+      { text: "The PMO recommends, but departments can opt out", detail: "Influence without authority", score: 2 },
+      { text: "The EPMO defines the approach framework; departments tailor within it", detail: "Governed flexibility", score: 3 },
+    ]
+  },
+  // AUTHORITY (2 questions)
+  {
+    dimension: "Authority",
+    dimClass: "authority",
+    question: "What authority does your PMO have over project portfolio composition?",
+    options: [
+      { text: "None — portfolio decisions happen above us without PMO input", detail: "No seat at the table", score: 1 },
+      { text: "We provide data and recommendations, but don't decide", detail: "Advisory role", score: 2 },
+      { text: "We participate in or lead portfolio governance decisions", detail: "Decision rights", score: 3 },
+    ]
+  },
+  {
+    dimension: "Authority",
+    dimClass: "authority",
+    question: "Can your PMO stop or reprioritize a project that doesn't align with strategy?",
+    options: [
+      { text: "No — we flag concerns but have no power to act", detail: "Observation only", score: 1 },
+      { text: "We can escalate, and leadership sometimes acts", detail: "Escalation path exists", score: 2 },
+      { text: "Yes — governance processes give us that mandate", detail: "Clear authority", score: 3 },
+    ]
+  },
+  // STRATEGY (2 questions)
+  {
+    dimension: "Strategy",
+    dimClass: "strategy",
+    question: "How clearly can you trace each active project back to a specific strategic objective?",
+    options: [
+      { text: "We can't — most projects exist because someone requested them", detail: "No traceability", score: 1 },
+      { text: "Some projects have documented strategic alignment; many don't", detail: "Partial traceability", score: 2 },
+      { text: "Every project maps to a strategic objective through portfolio governance", detail: "Full line-of-sight", score: 3 },
+    ]
+  },
+  {
+    dimension: "Strategy",
+    dimClass: "strategy",
+    question: "Does your PMO participate in strategic planning or only in execution?",
+    options: [
+      { text: "Execution only — we receive the plan and deliver projects", detail: "Downstream only", score: 1 },
+      { text: "We're consulted on feasibility and capacity, but not strategy", detail: "Tactical input", score: 2 },
+      { text: "We actively participate in translating strategy into portfolio decisions", detail: "Strategy-execution bridge", score: 3 },
+    ]
+  },
+  // GOVERNANCE (2 questions)
+  {
+    dimension: "Governance",
+    dimClass: "governance",
+    question: "Who is the PMO's executive sponsor and what is their level?",
+    options: [
+      { text: "A department head or functional director", detail: "Departmental sponsorship", score: 1 },
+      { text: "A VP or senior director with cross-functional influence", detail: "Senior sponsorship", score: 2 },
+      { text: "C-suite executive with enterprise-wide authority", detail: "Executive sponsorship", score: 3 },
+    ]
+  },
+  {
+    dimension: "Governance",
+    dimClass: "governance",
+    question: "Does your organization have a formal portfolio governance board?",
+    options: [
+      { text: "No — project approvals happen through individual sponsors", detail: "Ad hoc approvals", score: 1 },
+      { text: "There's a steering committee, but it's inconsistent", detail: "Informal governance", score: 2 },
+      { text: "Yes — a standing governance board reviews and prioritizes the portfolio", detail: "Formal governance", score: 3 },
+    ]
+  },
+  // VALUE (2 questions)
+  {
+    dimension: "Value",
+    dimClass: "value",
+    question: "How does your PMO measure its own success?",
+    options: [
+      { text: "Project delivery metrics: on time, on budget, on scope", detail: "Output metrics", score: 1 },
+      { text: "Delivery metrics plus some stakeholder satisfaction", detail: "Mixed metrics", score: 2 },
+      { text: "Strategic objective realization and benefits delivered across the portfolio", detail: "Outcome metrics", score: 3 },
+    ]
+  },
+  {
+    dimension: "Value",
+    dimClass: "value",
+    question: "Does your PMO track benefits realization after project delivery?",
+    options: [
+      { text: "No — our job ends at handover", detail: "Delivery-focused", score: 1 },
+      { text: "Occasionally, for major projects", detail: "Ad hoc benefits tracking", score: 2 },
+      { text: "Yes — benefits realization is a governed process across the portfolio", detail: "Systematic benefits management", score: 3 },
+    ]
+  },
+];
+
+const dimensionOrder = ["Scope", "Authority", "Strategy", "Governance", "Value"];
+const dimensionColors = {
+  Scope: "var(--red)", Authority: "var(--orange)", Strategy: "var(--teal)",
+  Governance: "var(--navy)", Value: "var(--purple)"
+};
+
+let answers = new Array(questions.length).fill(null);
+let currentQ = 0;
+
+function startQuiz() {
+  document.getElementById('heroSection').style.display = 'none';
+  renderQuestion(0);
+}
+
+function renderQuestion(idx) {
+  currentQ = idx;
+  const q = questions[idx];
+  const total = questions.length;
+  const pct = ((idx) / total) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = `
+    <div class="question-section active">
+      <div class="q-counter">QUESTION ${idx + 1} OF ${total}</div>
+      <div class="q-card">
+        <span class="q-dimension ${q.dimClass}">${q.dimension}</span>
+        <h2>${q.question}</h2>
+        <div class="options">
+          ${q.options.map((opt, oi) => `
+            <div class="option ${answers[idx] === oi ? 'selected' : ''}" onclick="selectOption(${idx}, ${oi})">
+              <div class="option-marker">${String.fromCharCode(65 + oi)}</div>
+              <div class="option-label">${opt.text}<small>${opt.detail}</small></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="nav-row">
+        <button class="btn btn-back" onclick="${idx > 0 ? `renderQuestion(${idx - 1})` : `restartFromQuestion()`}" ${idx === 0 ? '' : ''}>${idx === 0 ? '← Back to Start' : '← Back'}</button>
+        ${idx < total - 1
+          ? `<button class="btn btn-next" id="nextBtn" onclick="renderQuestion(${idx + 1})" ${answers[idx] === null ? 'disabled' : ''}>Next →</button>`
+          : `<button class="btn btn-next" id="nextBtn" onclick="showResults()" ${answers[idx] === null ? 'disabled' : ''}>See Results →</button>`
+        }
+      </div>
+    </div>
+  `;
+}
+
+function selectOption(qIdx, optIdx) {
+  answers[qIdx] = optIdx;
+  renderQuestion(qIdx);
+}
+
+function restartFromQuestion() {
+  document.getElementById('heroSection').style.display = 'block';
+  document.getElementById('quizContainer').innerHTML = '';
+  document.getElementById('progressBar').style.width = '0%';
+}
+
+function showResults() {
+  document.getElementById('quizContainer').innerHTML = '';
+  document.getElementById('progressBar').style.width = '100%';
+
+  // Calculate scores per dimension
+  const dimScores = {};
+  dimensionOrder.forEach(d => dimScores[d] = { total: 0, count: 0 });
+  questions.forEach((q, i) => {
+    if (answers[i] !== null) {
+      dimScores[q.dimension].total += q.options[answers[i]].score;
+      dimScores[q.dimension].count += 1;
+    }
+  });
+
+  const totalScore = Object.values(dimScores).reduce((s, d) => s + d.total, 0);
+  const maxScore = questions.length * 3;
+  const pct = Math.round((totalScore / maxScore) * 100);
+
+  let level, levelClass, levelTitle, levelDesc;
+  if (pct <= 40) {
+    level = 'pmo'; levelClass = 'pmo';
+    levelTitle = 'Departmental PMO';
+    levelDesc = 'Your organization is operating as a departmental PMO. The foundations are there, but scope, authority, and strategic reach need significant expansion before an EPMO is viable.';
+  } else if (pct <= 70) {
+    level = 'transition'; levelClass = 'transition';
+    levelTitle = 'In Transition';
+    levelDesc = 'Your PMO shows signs of enterprise-level thinking but hasn\'t made the structural shifts yet. Key gaps in authority, governance, or strategic alignment need to be addressed.';
+  } else {
+    level = 'epmo'; levelClass = 'epmo';
+    levelTitle = 'EPMO-Ready';
+    levelDesc = 'Your organization has the structural foundations for an Enterprise PMO. Focus on formalizing the mandate, deepening portfolio governance, and closing any remaining gaps.';
+  }
+
+  // Dimension insights
+  const dimInsights = {
+    Scope: {
+      1: "Your PMO serves a single function. Before scaling, establish value in your current scope — then build the business case for enterprise expansion.",
+      2: "You're reaching beyond one department but lack enterprise coverage. Map all business units running projects and identify the governance gaps between them.",
+      3: "Enterprise-wide scope is established. Ensure consistency of standards and approach across all business units, not just coverage."
+    },
+    Authority: {
+      1: "Your PMO has no decision rights over portfolio composition. This is the single biggest gap between a PMO and an EPMO. Start by establishing data-driven portfolio visibility.",
+      2: "You influence decisions but can't make them. Push for formal inclusion in portfolio governance — advisory input without authority erodes credibility over time.",
+      3: "Decision authority is in place. Protect it by demonstrating measurable impact from governance decisions — authority without results gets revoked."
+    },
+    Strategy: {
+      1: "No line-of-sight from projects to strategy. This is the core EPMO value proposition — start by mapping current projects to strategic objectives to expose the alignment gaps.",
+      2: "Partial alignment exists. Formalize the strategy-to-portfolio mapping and make it a governance requirement, not a best practice.",
+      3: "Strong strategy connection. Ensure the feedback loop is closed — benefits realized should inform the next strategic planning cycle."
+    },
+    Governance: {
+      1: "Governance is ad hoc and departmental. An EPMO without executive sponsorship and a formal governance board is just a bigger PMO with more overhead.",
+      2: "Governance structures exist but aren't consistent. Formalize the cadence, membership, and decision rights of your steering/portfolio governance body.",
+      3: "Strong governance foundation. Ensure governance decisions are transparent, documented, and connected to strategic outcomes."
+    },
+    Value: {
+      1: "You're measuring outputs, not outcomes. The shift from project success rates to strategic objective realization is what separates PMO value from EPMO value.",
+      2: "Mixed measurement approach. Commit to benefits realization as a governed process — not an occasional exercise for major projects.",
+      3: "Outcome-focused measurement is in place. Make sure value delivered is also value perceived — communicate impact to stakeholders consistently."
+    }
+  };
+
+  // Recommendations based on weakest dimensions
+  const dimAvgs = dimensionOrder.map(d => ({
+    dim: d,
+    avg: dimScores[d].count > 0 ? dimScores[d].total / dimScores[d].count : 0
+  })).sort((a, b) => a.avg - b.avg);
+
+  const recs = [];
+  if (level === 'pmo') {
+    recs.push({ strong: "Don't try to build an EPMO yet.", text: "Establish clear value at the departmental level first. Use the PMO Value Ring to demonstrate impact, then build the business case for expansion." });
+    recs.push({ strong: "Focus on " + dimAvgs[0].dim.toLowerCase() + " first.", text: "Your weakest dimension is " + dimAvgs[0].dim + ". Address this before scaling — it becomes a larger problem at enterprise scale." });
+    recs.push({ strong: "Read Part 2 of this series.", text: "The EPMO Mandate post covers why most EPMOs fail before they start — and it starts with trying to scale without the structural foundations." });
+  } else if (level === 'transition') {
+    recs.push({ strong: "You're in the transition zone.", text: "The risk here is getting stuck — doing EPMO-level work without EPMO-level authority. Formalize the mandate before expanding further." });
+    recs.push({ strong: "Close the " + dimAvgs[0].dim.toLowerCase() + " gap.", text: "Your weakest dimension is " + dimAvgs[0].dim + ". This is likely the bottleneck preventing the full shift to EPMO." });
+    recs.push({ strong: "Secure executive sponsorship.", text: "If your sponsor isn't C-suite, the governance authority you need for EPMO-level decisions will always be borrowed, not owned." });
+  } else {
+    recs.push({ strong: "Formalize the EPMO charter.", text: "You have the foundations — now document the mandate, governance model, and service scope in a formal EPMO charter." });
+    recs.push({ strong: "Even at EPMO level, watch " + dimAvgs[0].dim.toLowerCase() + ".", text: "Your relatively weakest area is " + dimAvgs[0].dim + ". At enterprise scale, even small gaps compound across business units." });
+    recs.push({ strong: "Apply the Flywheel at enterprise scale.", text: "Part 4 of this series covers how the 26 PMO services and 6 service approaches change when serving multiple business units simultaneously." });
+  }
+
+  const resultsHTML = `
+    <div class="result-hero">
+      <span class="result-badge ${levelClass}">YOUR DIAGNOSTIC RESULT</span>
+      <div class="result-title">${levelTitle}</div>
+      <div class="result-subtitle">${levelDesc}</div>
+      <div class="gauge-container">
+        <div class="gauge">
+          <div class="gauge-bg"></div>
+          <div class="gauge-fill" id="gaugeFill"></div>
+          <div class="gauge-score" id="gaugeScore">0</div>
+        </div>
+      </div>
+      <div class="gauge-label">${totalScore} / ${maxScore} points</div>
+    </div>
+
+    <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--title-dark); margin-bottom: 16px;">Breakdown by Dimension</h3>
+
+    ${dimensionOrder.map(dim => {
+      const d = dimScores[dim];
+      const avg = d.count > 0 ? d.total / d.count : 0;
+      const barPct = Math.round((avg / 3) * 100);
+      const dimLevel = avg <= 1.5 ? 'pmo' : avg <= 2.3 ? 'transition' : 'epmo';
+      const dimLevelText = avg <= 1.5 ? 'PMO Level' : avg <= 2.3 ? 'In Transition' : 'EPMO Level';
+      const insightKey = avg <= 1.5 ? 1 : avg <= 2.3 ? 2 : 3;
+      return `
+        <div class="dimension-card">
+          <div class="dim-header">
+            <span class="dim-label">${dim}</span>
+            <span class="dim-score-label ${dimLevel}">${dimLevelText}</span>
+          </div>
+          <div class="dim-bar-track">
+            <div class="dim-bar-fill ${dim.toLowerCase()}" style="width: ${barPct}%"></div>
+          </div>
+          <div class="dim-insight">${dimInsights[dim][insightKey]}</div>
+        </div>
+      `;
+    }).join('')}
+
+    <div class="recs-card">
+      <h3>What to Do Next</h3>
+      ${recs.map(r => `
+        <div class="rec-item">
+          <span class="rec-arrow">→</span>
+          <div class="rec-text"><strong>${r.strong}</strong> ${r.text}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="cta-block">
+      <h3>EPMO Series by Thamer AlMujalli</h3>
+      <p>This diagnostic accompanies Part 1: PMO vs. EPMO — What Actually Changes at the Enterprise Level</p>
+      <button class="btn btn-restart" onclick="restart()">Take Again</button>
+    </div>
+  `;
+
+  const resultsEl = document.getElementById('resultsSection');
+  resultsEl.innerHTML = resultsHTML;
+  resultsEl.classList.add('active');
+
+  // Animate gauge
+  setTimeout(() => {
+    const rotation = -225 + (pct / 100) * 270;
+    document.getElementById('gaugeFill').style.transform = `rotate(${rotation}deg)`;
+    animateScore(0, pct, 1000);
+  }, 300);
+}
+
+function animateScore(from, to, duration) {
+  const el = document.getElementById('gaugeScore');
+  const start = performance.now();
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(from + (to - from) * eased) + '%';
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function restart() {
+  answers = new Array(questions.length).fill(null);
+  currentQ = 0;
+  document.getElementById('resultsSection').classList.remove('active');
+  document.getElementById('resultsSection').innerHTML = '';
+  document.getElementById('heroSection').style.display = 'block';
+  document.getElementById('progressBar').style.width = '0%';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
